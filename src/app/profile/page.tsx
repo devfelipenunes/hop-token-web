@@ -1,13 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import NavBar from "@/components/NavBar";
 import api from "@/service/api";
-import Link from "next/link";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import CreateRecipeModal from "@/components/CreateRecipe";
 
 export default function Profile() {
   const [user, setUser] = useState({});
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const { register, handleSubmit } = useForm({
     defaultValues: user,
@@ -26,10 +27,18 @@ export default function Profile() {
         console.log(error);
       });
   }, []);
+
   return (
     <main className="flex min-h-screen flex-col items-center">
       <NavBar />
-      <div></div>
+      <div>
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className="bg-green-500 text-white px-4 py-2 rounded-md mt-4"
+        >
+          Criar Nova Receita
+        </button>
+      </div>
       <div className="mt-8 p-6 bg-gray-100 rounded-md text-black ">
         <h1 className="text-xl font-bold mb-4">Perfil do Usuário</h1>
         <form
@@ -44,13 +53,6 @@ export default function Profile() {
               Nome:
             </label>
             <p>{user.name}</p>
-            {/* <input
-              type="text"
-              id="name"
-              name="name"
-              {...register("name")}
-              className="border border-gray-300 rounded-md px-3 py-1 w-full"
-            /> */}
           </div>
 
           <div>
@@ -61,13 +63,6 @@ export default function Profile() {
               Wallet:
             </label>
             <p>{user.wallet_address}</p>
-            {/* <input
-              type="text"
-              id="saldo"
-              name="saldo"
-              {...register("saldo")}
-              className="border border-gray-300 rounded-md px-3 py-1 w-full"
-            /> */}
           </div>
           <div>
             <label
@@ -77,24 +72,18 @@ export default function Profile() {
               Email:
             </label>
             <p>{user.email}</p>
-            {/* <input
-              type="email"
-              id="email"
-              name="email"
-              {...register("email")}
-              className="border border-gray-300 rounded-md px-3 py-1 w-full"
-            /> */}
           </div>
-
-          {/* </div> */}
-          {/* <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-          >
-            Salvar Alterações
-          </button> */}
         </form>
       </div>
+      <CreateRecipeModal
+        show={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onRecipeCreated={(newRecipe) => {
+          // Aqui você pode adicionar lógica para atualizar a lista de receitas após a criação de uma nova
+          console.log("Nova receita criada:", newRecipe);
+          setShowCreateModal(false);
+        }}
+      />
     </main>
   );
 }

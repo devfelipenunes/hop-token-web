@@ -1,44 +1,10 @@
 "use client";
 
 import NavBar from "@/components/NavBar";
+import api from "@/service/api";
 
 import Link from "next/link";
-import { useState } from "react";
-
-const revenues = [
-  {
-    name: "IPA",
-    stars: 5,
-    price: (Math.random() * (10 - 5) + 5).toFixed(2), // Preço aleatório entre 5 e 10
-    description:
-      "India Pale Ale is a hoppy beer style within the broader category of pale ale. It has a higher alcohol content and a strong, bitter flavor.",
-    ingredients: ["Hops", "Malt", "Yeast", "Water"],
-  },
-  {
-    name: "Stout",
-    stars: 4,
-    price: (Math.random() * (10 - 5) + 5).toFixed(2),
-    description:
-      "Stout is a dark, rich beer brewed with roasted malt or roasted barley, hops, water, and yeast. It typically has a creamy texture and a slightly bitter taste.",
-    ingredients: ["Roasted Barley", "Malt", "Yeast", "Water"],
-  },
-  {
-    name: "Pale Ale",
-    stars: 3,
-    price: (Math.random() * (10 - 5) + 5).toFixed(2),
-    description:
-      "Pale Ale is a style of beer that is characterized by its fruity, floral, and citrusy hop flavors. It is typically brewed with pale malt and has a moderate to high hop bitterness.",
-    ingredients: ["Hops", "Pale Malt", "Yeast", "Water"],
-  },
-  {
-    name: "Lager",
-    stars: 4,
-    price: (Math.random() * (10 - 5) + 5).toFixed(2),
-    description:
-      "Lager is a type of beer that is fermented and conditioned at low temperatures. It is known for its clean, crisp taste and smooth finish.",
-    ingredients: ["Hops", "Malt", "Yeast", "Water"],
-  },
-];
+import { useEffect, useState } from "react";
 
 const beers = [
   {
@@ -83,6 +49,7 @@ export default function Home() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [cartItems, setCartItems] = useState([]);
+  const [recipe, setRecipe] = useState([]);
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -121,6 +88,18 @@ export default function Home() {
       setQuantity(1);
     }
   };
+
+  useEffect(() => {
+    api
+      .get("/recipe")
+      .then((response) => {
+        console.log(response.data);
+        setRecipe(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <main className="flex min-h-screen flex-col items-center">
@@ -163,7 +142,7 @@ export default function Home() {
                 onClick={handleAddToCart}
                 className="bg-blue-500 text-white px-4 py-2 mt-4 rounded-md"
               >
-                Adicionar ao Carrinho
+                comprar
               </button>
             </div>
           </div>
@@ -196,7 +175,7 @@ export default function Home() {
           <Link href="/revenues">Ver mais</Link>
         </div>
         <div className="flex flex-row justify-between px-3">
-          {revenues.map((recipe, index) => (
+          {recipe.map((recipe, index) => (
             <div
               className="w-1/4 h-[200px] flex flex-col justify-between items-center bg-white text-black m-3"
               key={index}

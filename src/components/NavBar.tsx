@@ -7,18 +7,6 @@ export default function NavBar() {
       route: "/",
     },
     {
-      name: "cerveja",
-      route: "/beer",
-    },
-    {
-      name: "receitas",
-      route: "/revenues",
-    },
-    {
-      name: "carrinho",
-      route: "/cart",
-    },
-    {
       name: "perfil",
       route: "/profile",
     },
