@@ -114,7 +114,7 @@ export default function Profile() {
       </div>
 
       <div>
-        <div className="flex flex-col w-full max-w-[700px] justify-between mb-6">
+        {/* <div className="flex flex-col w-full max-w-[700px] justify-between mb-6">
           <div className="bg-orange-600 w-full max-w-5xl items-center justify-between font-mono text-sm flex flex-row p-5  rounded-md text-white">
             <p className="text-white">Melhores Cervejas</p>
           </div>
@@ -138,7 +138,7 @@ export default function Profile() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
         {/* Melhores cervejas */}
 
         {/* Melhores receitas */}
