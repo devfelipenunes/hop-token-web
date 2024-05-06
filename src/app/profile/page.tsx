@@ -10,6 +10,7 @@ import CreateRecipeModal from "@/components/CreateRecipe";
 export default function Profile() {
   const [user, setUser] = useState({});
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [recipes, setRecipes] = useState([]);
 
   const { register, handleSubmit } = useForm({
     defaultValues: user,
@@ -23,6 +24,17 @@ export default function Profile() {
       .then((response) => {
         setUser(response.data);
         console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    api
+      .get("/user/recipes")
+      .then((response) => {
+        setRecipes(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -142,18 +154,19 @@ export default function Profile() {
         {/* Melhores cervejas */}
 
         {/* Melhores receitas */}
-        {/* <div className="flex flex-col w-full max-w-[700px] justify-between mb-6">
-          <div className="bg-green-700 w-full max-w-5xl items-center justify-between font-mono text-sm flex flex-row p-5 text-white rounded-md">
-            <p>Melhores Receitas</p>
-          </div>
+        <div className="flex flex-col w-full max-w-[700px] justify-between mb-6">
           <div className="flex flex-wrap justify-between px-3">
-            {recipe.map((recipe, index) => (
+            {recipes.map((recipe, index) => (
               <div
                 className="w-[200px] h-[250px] flex flex-col justify-between items-center text-black m-3 rounded-lg p-2 bg-green-700 "
                 key={index}
                 onClick={() => handleItemClick(recipe)}
               >
-                <div className="w-full h-1/2 bg-white rounded-lg" />
+                <img
+                  src={recipe.image} // Substitua pela URL da sua imagem
+                  alt="Descrição da imagem" // Adicione uma descrição adequada para acessibilidade
+                  className="w-full h-[50%] rounded-lg" // Ajuste o tamanho e a classe conforme necessário
+                />
                 <div className="w-full h-1/2 text-white mt-2 flex flex-col justify-between">
                   <div>
                     <p>{recipe.name}</p>
@@ -167,7 +180,7 @@ export default function Profile() {
               </div>
             ))}
           </div>
-        </div> */}
+        </div>
         {/* Melhores receitas */}
       </div>
 

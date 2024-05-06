@@ -247,7 +247,11 @@ export default function Home() {
               key={index}
               onClick={() => handleItemClick(recipe)}
             >
-              <div className="w-full h-1/2 bg-white rounded-lg" />
+              <img
+                src={recipe.image} // Substitua pela URL da sua imagem
+                alt="Descrição da imagem" // Adicione uma descrição adequada para acessibilidade
+                className="w-full h-[50%] rounded-lg" // Ajuste o tamanho e a classe conforme necessário
+              />
               <div className="w-full h-1/2 text-white mt-2 flex flex-col justify-between">
                 <div>
                   <p>{recipe.name}</p>
