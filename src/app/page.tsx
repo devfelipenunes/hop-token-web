@@ -59,6 +59,16 @@ export default function Home() {
     setQuantity(parseInt(event.target.value));
   };
 
+  const buy = () => {
+    api
+      .get(`/recipe/buy/${selectedItem.id}`)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleAddToCart = () => {
     if (selectedItem) {
       const existingItemIndex = cartItems.findIndex(
@@ -106,7 +116,7 @@ export default function Home() {
       <NavBar />
       {selectedItem && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex justify-center items-center z-50 text-black">
-          <div className="bg-white p-6 rounded-lg">
+          <div className="bg-white p-6 rounded-lg w-[300px]">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold">{selectedItem.name}</h2>
               <button
@@ -116,75 +126,118 @@ export default function Home() {
                 Fechar
               </button>
             </div>
-            {selectedItem.price && <p>Preço: {selectedItem.price}</p>}
-            {selectedItem.alcoholic && (
-              <p>Teor Alcoólico: {selectedItem.alcoholic}%</p>
-            )}
-            {selectedItem.rating && <p>Avaliação: {selectedItem.rating}</p>}
-            <p>Descrição: {selectedItem.description}</p>
-            <label
-              htmlFor="quantity"
-              className="block mt-4"
-            >
-              Quantidade:
-            </label>
-            <div className="justify-between items-center mb-4 flex">
-              <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                min="1"
-                value={quantity}
-                onChange={handleQuantityChange}
-                className="border border-gray-300 rounded-md px-2 py-1 mt-1"
-              />
-              <button
-                onClick={handleAddToCart}
-                className="bg-blue-500 text-white px-4 py-2 mt-4 rounded-md"
-              >
-                comprar
-              </button>
+
+            <div className="">
+              <div className="w-full">
+                <div className="sm:w-1/2 h-[250px] sm:mr-5 sm:mb-0 mb-5 bg-slate-600">
+                  x
+                </div>
+                <div className="sm:w-1/2">
+                  <div>
+                    {selectedItem.price && <p>Preço: {selectedItem.price}</p>}
+                    {selectedItem.alcoholic && (
+                      <p>Teor Alcoólico: {selectedItem.alcoholic}%</p>
+                    )}
+                    {selectedItem.rating && (
+                      <p>Avaliação: {selectedItem.rating}</p>
+                    )}
+                    <p>Descrição: {selectedItem.description}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="justify-between items-center flex">
+                {!selectedItem?.royaltiesId && (
+                  <label
+                    htmlFor="quantity"
+                    className="block mt-4"
+                  >
+                    Quantidade:
+                  </label>
+                )}
+                <div className="flex flex-row w-full mt-5 items-center">
+                  {!selectedItem?.royaltiesId ? (
+                    <>
+                      <input
+                        type="number"
+                        id="quantity"
+                        name="quantity"
+                        min="1"
+                        value={quantity}
+                        onChange={handleQuantityChange}
+                        className="border border-gray-300 rounded-md px-2 h-10 mr-2 w-12"
+                      />
+                      <button
+                        onClick={buy}
+                        className="bg-orange-700 text-white px-4 py-2 rounded-md"
+                      >
+                        comprar
+                      </button>
+                    </>
+                  ) : (
+                    <div
+                      className={`flex flex-col justify-center items-center w-full px-4`}
+                    >
+                      <button
+                        onClick={buy}
+                        className="bg-green-700 text-white px-4 py-2 rounded-md"
+                      >
+                        comprar
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       )}
       <div className="flex flex-col w-full max-w-[700px] justify-between mb-6">
-        <div className="bg-white w-full max-w-5xl items-center justify-between font-mono text-sm flex flex-row p-5  text-black">
-          <p>Melhores Cervejas</p>
-          <Link href="/beer">Ver mais</Link>
+        <div className="bg-orange-600 w-full max-w-5xl items-center justify-between font-mono text-sm flex flex-row p-5  rounded-md text-white">
+          <p className="text-white">Melhores Cervejas</p>
         </div>
-        <div className="flex flex-row justify-between px-3">
-          {beers.map((beer) => (
+        <div className="flex flex-wrap justify-between px-3">
+          {beers.map((beer, index) => (
             <div
-              className="w-1/4 h-[200px] flex flex-col justify-between items-center bg-white text-black m-3"
-              key={beer.id}
+              className="w-[200px] h-[250px] flex flex-col justify-between items-center rounded-lg bg-orange-600 text-white m-3  p-2"
+              key={index}
               onClick={() => handleItemClick(beer)}
             >
               <div className="w-full h-1/2 bg-red-500" />
-              <div className="w-full h-1/2">
-                <p>{beer.name}</p>
-                {beer.price && <p>{beer.price}</p>}
+              <div className="w-full h-1/2  mt-2 flex flex-col justify-between">
+                <div>
+                  <p>{beer.name}</p>
+                  {beer.price && <p>{beer.price}</p>}
+                </div>
+                <div className="bg-orange-400 items-center justify-center flex rounded-md p-1">
+                  <p>Comprar</p>
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
       <div className="flex flex-col w-full max-w-[700px] justify-between mb-6">
-        <div className="bg-white w-full max-w-5xl items-center justify-between font-mono text-sm flex flex-row p-5 text-black">
+        <div className="bg-green-700 w-full max-w-5xl items-center justify-between font-mono text-sm flex flex-row p-5 text-white rounded-md">
           <p>Melhores Receitas</p>
-          <Link href="/revenues">Ver mais</Link>
         </div>
-        <div className="flex flex-row justify-between px-3">
+        <div className="flex flex-wrap justify-between px-3">
           {recipe.map((recipe, index) => (
             <div
-              className="w-1/4 h-[200px] flex flex-col justify-between items-center bg-white text-black m-3"
+              className="w-[200px] h-[250px] flex flex-col justify-between items-center text-black m-3 rounded-lg p-2 bg-green-700 "
               key={index}
               onClick={() => handleItemClick(recipe)}
             >
-              <div className="w-full h-1/2 bg-red-500" />
-              <div className="w-full h-1/2">
-                <p>{recipe.name}</p>
-                {recipe.stars && <p>rating: {recipe.stars}</p>}
+              <div className="w-full h-1/2 bg-white rounded-lg" />
+              <div className="w-full h-1/2 text-white mt-2 flex flex-col justify-between">
+                <div>
+                  <p>{recipe.name}</p>
+                  <p>{recipe.price}</p>
+                </div>
+
+                <div className="bg-green-500 items-center justify-center flex rounded-md p-1">
+                  <p>Comprar</p>
+                </div>
               </div>
             </div>
           ))}

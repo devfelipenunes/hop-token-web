@@ -26,9 +26,9 @@ const CreateRecipeModal = ({ show, onClose, onRecipeCreated }) => {
     show && (
       <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex justify-center items-center z-50 text-black">
         <div className="bg-white p-6 rounded-lg">
-          <h2 className="text-lg font-bold mb-4">Criar Nova Receita</h2>
+          <h2 className="text-lg font-bold mb-8">Criar Nova Receita</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="input-wrapper">
+            <div className="input-wrapper space-x-2">
               <label htmlFor="name">Nome:</label>
               <input
                 type="text"
@@ -39,7 +39,7 @@ const CreateRecipeModal = ({ show, onClose, onRecipeCreated }) => {
               />
             </div>
 
-            <div className="input-wrapper">
+            <div className="input-wrapper space-x-2">
               <label htmlFor="price">Preço:</label>
               <input
                 type="text"
@@ -50,7 +50,7 @@ const CreateRecipeModal = ({ show, onClose, onRecipeCreated }) => {
               />
             </div>
 
-            <div className="input-wrapper">
+            <div className="input-wrapper space-x-2">
               <label htmlFor="description">Descrição:</label>
               <input
                 type="text"
@@ -61,7 +61,7 @@ const CreateRecipeModal = ({ show, onClose, onRecipeCreated }) => {
               />
             </div>
 
-            <div className="input-wrapper">
+            <div className="input-wrapper space-x-2">
               <label htmlFor="ingredients">Ingredientes:</label>
               <input
                 type="text"
@@ -72,7 +72,11 @@ const CreateRecipeModal = ({ show, onClose, onRecipeCreated }) => {
               />
             </div>
 
-            <div className="flex justify-end mt-4">
+            <div
+              className="flex justify-end mt-8
+            
+            "
+            >
               <button
                 onClick={handleCloseModal}
                 className="bg-gray-300 text-black px-4 py-2 mr-4 rounded-md"
