@@ -55,11 +55,11 @@ export default function Beer() {
   const [quantity, setQuantity] = useState(1);
   const [cartItems, setCartItems] = useState([]);
 
-  const handleItemClick = (item) => {
+  const handleItemClick = (item: any) => {
     setSelectedItem(item);
   };
 
-  const handleQuantityChange = (event) => {
+  const handleQuantityChange = (event: any) => {
     setQuantity(parseInt(event.target.value));
   };
 
@@ -110,7 +110,7 @@ export default function Beer() {
                 Fechar
               </button>
             </div>
-            {selectedItem.description && <p>{selectedItem.description}</p>}
+            {selectedItem?.description && <p>{selectedItem.description}</p>}
             <label
               htmlFor="quantity"
               className="block mt-4"

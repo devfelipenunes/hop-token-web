@@ -16,7 +16,7 @@ export default function Cart() {
     return total + parseFloat(item.price) * item.quantity;
   }, 0);
 
-  const removeFromCart = (index) => {
+  const removeFromCart = (index: any) => {
     const updatedCart = [...cartItems];
     updatedCart.splice(index, 1);
     setCartItems(updatedCart);

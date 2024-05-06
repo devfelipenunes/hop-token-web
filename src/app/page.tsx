@@ -114,6 +114,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center">
       <NavBar />
+      {/* Modal */}
       {selectedItem && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex justify-center items-center z-50 text-black">
           <div className="bg-white p-6 rounded-lg w-[300px]">
@@ -192,6 +193,9 @@ export default function Home() {
           </div>
         </div>
       )}
+      {/* Modal */}
+
+      {/* Melhores cervejas */}
       <div className="flex flex-col w-full max-w-[700px] justify-between mb-6">
         <div className="bg-orange-600 w-full max-w-5xl items-center justify-between font-mono text-sm flex flex-row p-5  rounded-md text-white">
           <p className="text-white">Melhores Cervejas</p>
@@ -217,6 +221,9 @@ export default function Home() {
           ))}
         </div>
       </div>
+      {/* Melhores cervejas */}
+
+      {/* Melhores receitas */}
       <div className="flex flex-col w-full max-w-[700px] justify-between mb-6">
         <div className="bg-green-700 w-full max-w-5xl items-center justify-between font-mono text-sm flex flex-row p-5 text-white rounded-md">
           <p>Melhores Receitas</p>
@@ -243,6 +250,7 @@ export default function Home() {
           ))}
         </div>
       </div>
+      {/* Melhores receitas */}
     </main>
   );
 }
