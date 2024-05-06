@@ -125,7 +125,10 @@ export default function Home() {
               <h2 className="text-lg font-bold">{selectedItem.name}</h2>
               <button
                 className="text-red-500"
-                onClick={() => setSelectedItem(null)}
+                onClick={() => {
+                  setSelectedItem(null);
+                  setError(false);
+                }}
               >
                 Fechar
               </button>
