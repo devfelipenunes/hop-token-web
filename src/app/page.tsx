@@ -65,6 +65,7 @@ export default function Home() {
       .get(`/recipe/buy/${selectedItem.id}`)
       .then((response) => {
         console.log(response.data);
+        setSelectedItem(null);
       })
       .catch((error) => {
         console.log(error.response.message);
