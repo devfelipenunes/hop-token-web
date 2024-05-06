@@ -50,6 +50,7 @@ export default function Home() {
   const [quantity, setQuantity] = useState(1);
   const [cartItems, setCartItems] = useState([]);
   const [recipe, setRecipe] = useState([]);
+  const [error, setError] = useState(false);
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -66,7 +67,8 @@ export default function Home() {
         console.log(response.data);
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.response.message);
+        setError(true);
       });
   };
   const handleAddToCart = () => {
@@ -179,6 +181,12 @@ export default function Home() {
                     <div
                       className={`flex flex-col justify-center items-center w-full px-4`}
                     >
+                      {error && (
+                        <p className="text-red-500 mb-6">
+                          Usuário não pode comprar sua propria receita
+                        </p>
+                      )}
+
                       <button
                         onClick={buy}
                         className="bg-green-700 text-white px-4 py-2 rounded-md"
