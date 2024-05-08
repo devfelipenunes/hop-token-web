@@ -1,49 +1,16 @@
 "use client";
 
 import NavBar from "@/components/NavBar";
+import {
+  Recipe,
+  loadMyNFTRecipes,
+  loadNFTRecipes,
+} from "@/service/Web3Service";
 import api from "@/service/api";
+import Image from "next/image";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
-const beers = [
-  {
-    id: 1,
-    name: "Pilsen Premium",
-    price: "5,99",
-    alcoholic: 5,
-    rating: 4.5,
-    description:
-      "Pilsen Premium é uma cerveja leve e refrescante, perfeita para ser apreciada em dias quentes. Com notas sutis de lúpulo e um teor alcoólico moderado, é uma escolha clássica para quem busca uma cerveja fácil de beber.",
-  },
-  {
-    id: 2,
-    name: "Amber Ale Artesanal",
-    price: "5,99",
-    alcoholic: 5,
-    rating: 4.2,
-    description:
-      "Amber Ale Artesanal é uma cerveja encorpada e complexa, com aromas caramelizados e um sabor rico e maltado. Com um leve amargor no final, é uma excelente opção para quem aprecia cervejas com personalidade.",
-  },
-  {
-    id: 3,
-    name: "India Pale Ale Citrus",
-    price: "5,99",
-    alcoholic: 5,
-    rating: 4.7,
-    description:
-      "India Pale Ale Citrus é uma cerveja intensamente aromática, com notas cítricas de lúpulo e um sabor equilibrado entre o amargor e a doçura do malte. Ideal para os amantes de cervejas com caráter.",
-  },
-  {
-    id: 4,
-    name: "Stout Especial",
-    price: "5,99",
-    alcoholic: 5,
-    rating: 4.4,
-    description:
-      "Stout Especial é uma cerveja escura e robusta, com sabores intensos de malte torrado, café e chocolate. Com um corpo encorpado e uma cremosidade irresistível, é uma verdadeira indulgência para os apreciadores de cervejas escuras.",
-  },
-];
 
 export default function Home() {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -51,71 +18,79 @@ export default function Home() {
   const [cartItems, setCartItems] = useState([]);
   const [recipe, setRecipe] = useState([]);
   const [error, setError] = useState(false);
+  const [nfts, setNfts] = useState<Recipe[]>([]);
+  const [totalNfts, setTotalNfts] = useState<Recipe[]>([]);
 
-  const handleItemClick = (item) => {
-    setSelectedItem(item);
-  };
+  // const handleItemClick = (item) => {
+  //   setSelectedItem(item);
+  // };
 
-  const handleQuantityChange = (event) => {
-    setQuantity(parseInt(event.target.value));
-  };
-
-  const buy = () => {
-    api
-      .get(`/recipe/buy/${selectedItem.id}`)
-      .then((response) => {
-        console.log(response.data);
-        setSelectedItem(null);
-      })
-      .catch((error) => {
-        console.log(error.response.message);
-        setError(true);
-      });
-  };
-  const handleAddToCart = () => {
-    if (selectedItem) {
-      const existingItemIndex = cartItems.findIndex(
-        (item) => item.id === selectedItem.id
-      );
-
-      if (existingItemIndex !== -1) {
-        const updatedCart = cartItems.map((item, index) => {
-          if (index === existingItemIndex) {
-            return {
-              ...item,
-              quantity: item.quantity + quantity,
-            };
-          }
-          return item;
-        });
-        setCartItems(updatedCart);
-        localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-      } else {
-        const itemToAdd = { ...selectedItem, quantity };
-        const updatedCart = [...cartItems, itemToAdd];
-        setCartItems(updatedCart);
-        localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-      }
-
-      setSelectedItem(null);
-      setQuantity(1);
-    }
-  };
+  // const handleQuantityChange = (event) => {
+  //   setQuantity(parseInt(event.target.value));
+  // };
 
   useEffect(() => {
-    api
-      .get("/recipe")
-      .then((response) => {
-        console.log(response.data);
-        setRecipe(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    loadNFTRecipes()
+      .then((nfts) => setNfts(nfts))
+      .catch((err) => alert(err.message));
   }, []);
 
+  // const buy = () => {
+  //   api
+  //     .get(`/recipe/buy/${selectedItem.id}`)
+  //     .then((response) => {
+  //       console.log(response.data);
+  //       setSelectedItem(null);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.response.message);
+  //       setError(true);
+  //     });
+  // };
+  // const handleAddToCart = () => {
+  //   if (selectedItem) {
+  //     const existingItemIndex = cartItems.findIndex(
+  //       (item) => item.id === selectedItem.id
+  //     );
+
+  //     if (existingItemIndex !== -1) {
+  //       const updatedCart = cartItems.map((item, index) => {
+  //         if (index === existingItemIndex) {
+  //           return {
+  //             ...item,
+  //             quantity: item.quantity + quantity,
+  //           };
+  //         }
+  //         return item;
+  //       });
+  //       setCartItems(updatedCart);
+  //       localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+  //     } else {
+  //       const itemToAdd = { ...selectedItem, quantity };
+  //       const updatedCart = [...cartItems, itemToAdd];
+  //       setCartItems(updatedCart);
+  //       localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+  //     }
+
+  //     setSelectedItem(null);
+  //     setQuantity(1);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   api
+  //     .get("/recipe")
+  //     .then((response) => {
+  //       console.log(response.data);
+  //       setRecipe(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, []);
+
   return (
-    <main className="flex min-h-screen flex-col items-center">
+    <main className="flex min-h-screen flex-col items-center bg-white">
       <NavBar />
       {/* Modal */}
       {selectedItem && (
@@ -208,40 +183,70 @@ export default function Home() {
       {/* Modal */}
 
       {/* Melhores cervejas */}
-      <div className="flex flex-col w-full max-w-[700px] justify-between mb-6">
-        <div className="bg-orange-600 w-full max-w-5xl items-center justify-between font-mono text-sm flex flex-row p-5  rounded-md text-white">
-          <p className="text-white">Melhores Cervejas</p>
-        </div>
-        <div className="flex flex-wrap justify-between px-3">
-          {beers.map((beer, index) => (
-            <div
-              className="w-[200px] h-[250px] flex flex-col justify-between items-center rounded-lg bg-orange-600 text-white m-3  p-2"
-              key={index}
-              onClick={() => handleItemClick(beer)}
-            >
-              <div className="w-full h-1/2 bg-red-500" />
-              <div className="w-full h-1/2  mt-2 flex flex-col justify-between">
-                <div>
-                  <p>{beer.name}</p>
-                  {beer.price && <p>{beer.price}</p>}
-                </div>
-                <div className="bg-orange-400 items-center justify-center flex rounded-md p-1">
-                  <p>Comprar</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+
       {/* Melhores cervejas */}
 
       {/* Melhores receitas */}
-      <div className="flex flex-col w-full max-w-[700px] justify-between mb-6">
+      <div className="flex flex-col w-full max-w-[700px] justify-between mb-6 mt-[100px]">
         <div className="bg-green-700 w-full max-w-5xl items-center justify-between font-mono text-sm flex flex-row p-5 text-white rounded-md">
           <p>Melhores Receitas</p>
         </div>
         <div className="flex flex-wrap justify-between px-3">
-          {recipe.map((recipe, index) => (
+          {nfts && nfts.length ? (
+            nfts.map((nft) => (
+              <div className="px-3 w-[250px] mt-5 ">
+                <div className="bg-white overflow-hidden rounded-xl text-gray-500 shadow-2xl">
+                  <Link
+                    href={`/details/${nft.itemId}`}
+                    className=""
+                  >
+                    <Image
+                      src={nft.image}
+                      className="w-full"
+                      alt="..."
+                      width="600"
+                      height="600"
+                    />
+                  </Link>
+                  <div className="px-4 py-6 sm:px-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-xl">
+                        <Link
+                          href={`/details/${nft.itemId}`}
+                          className="hover:text-primary-500 text-gray-900"
+                        >
+                          {nft.name}
+                        </Link>
+                      </h3>
+                    </div>
+
+                    <div className="flex items-center justify-between flex-col">
+                      {/* <div>
+                        <Link
+                          href={`/details/${nft.itemId}`}
+                          className="hover:text-gray-400 inline-flex italic items-center space-x-2 text-sm"
+                        >
+                          <span>by {nft.description}</span>
+                        </Link>
+                      </div> */}
+
+                      <div className=" mt-10">
+                        <Link
+                          href={`/details/${nft.itemId}`}
+                          className="group text-secondary-500 flex flex-row justify-center items-center px-4 py-2 rounded-lg hover:bg-slate-200 bg-slate-300"
+                        >
+                          <p className="">Comprar</p>{" "}
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <>No NFTs found for this user.</>
+          )}
+          {/* {recipe.map((recipe, index) => (
             <div
               className="w-[200px] h-[250px] flex flex-col justify-between items-center text-black m-3 rounded-lg p-2 bg-green-700 "
               key={index}
@@ -263,7 +268,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          ))}
+          ))} */}
         </div>
       </div>
       {/* Melhores receitas */}

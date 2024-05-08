@@ -6,40 +6,28 @@ import api from "@/service/api";
 import { useForm } from "react-hook-form";
 import { MdContentCopy } from "react-icons/md"; // Importar o ícone de cópia
 import CreateRecipeModal from "@/components/CreateRecipe";
+import { Recipe, loadMyNFTRecipes } from "@/service/Web3Service";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function Profile() {
   const [user, setUser] = useState({});
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [recipes, setRecipes] = useState([]);
+  const [nfts, setNfts] = useState<Recipe[]>([]);
+  const [account, setAccount] = useState("");
+
+  useEffect(() => {
+    loadMyNFTRecipes()
+      .then((nfts) => setNfts(nfts))
+      .catch((err) => alert(err.message));
+  }, []);
 
   const { register, handleSubmit } = useForm({
     defaultValues: user,
   });
 
   const onSubmit = (data) => {};
-
-  useEffect(() => {
-    api
-      .get("/me")
-      .then((response) => {
-        setUser(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    api
-      .get("/user/recipes")
-      .then((response) => {
-        setRecipes(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
   function abbreviateWalletAddress(walletAddress) {
     const lengthToShow = 7;
@@ -52,134 +40,94 @@ export default function Profile() {
     navigator.clipboard.writeText(user?.wallet_address);
   };
 
-  const beers = [
-    {
-      id: 1,
-      name: "Pilsen Premium",
-      price: "5,99",
-      alcoholic: 5,
-      rating: 4.5,
-      description:
-        "Pilsen Premium é uma cerveja leve e refrescante, perfeita para ser apreciada em dias quentes. Com notas sutis de lúpulo e um teor alcoólico moderado, é uma escolha clássica para quem busca uma cerveja fácil de beber.",
-    },
-    {
-      id: 2,
-      name: "Amber Ale Artesanal",
-      price: "5,99",
-      alcoholic: 5,
-      rating: 4.2,
-      description:
-        "Amber Ale Artesanal é uma cerveja encorpada e complexa, com aromas caramelizados e um sabor rico e maltado. Com um leve amargor no final, é uma excelente opção para quem aprecia cervejas com personalidade.",
-    },
-    {
-      id: 3,
-      name: "India Pale Ale Citrus",
-      price: "5,99",
-      alcoholic: 5,
-      rating: 4.7,
-      description:
-        "India Pale Ale Citrus é uma cerveja intensamente aromática, com notas cítricas de lúpulo e um sabor equilibrado entre o amargor e a doçura do malte. Ideal para os amantes de cervejas com caráter.",
-    },
-    {
-      id: 4,
-      name: "Stout Especial",
-      price: "5,99",
-      alcoholic: 5,
-      rating: 4.4,
-      description:
-        "Stout Especial é uma cerveja escura e robusta, com sabores intensos de malte torrado, café e chocolate. Com um corpo encorpado e uma cremosidade irresistível, é uma verdadeira indulgência para os apreciadores de cervejas escuras.",
-    },
-  ];
-
   return (
-    <main className="flex min-h-screen flex-col items-center">
+    <main className="flex min-h-screen flex-col items-center bg-white">
       <NavBar />
-      <div className="bg-orange-300 w-full h-[200px] flex justify-center">
-        <div className="w-[600px] h-full flex flex-row justify-between items-center">
-          <div className="flex flex-row items-center space-x-2">
-            <img
-              src={user?.image}
-              alt="Imagem do usuário"
-              className="w-[100px] h-[100px] rounded-full"
-            />
 
-            <div>
-              <p className="text-3xl font-bold">{user.name}</p>
-              <div className="flex items-center">
-                <p>{abbreviateWalletAddress(user.wallet_address)}</p>
-                <MdContentCopy
-                  className="ml-2 cursor-pointer text-white"
-                  onClick={handleCopyWalletAddress}
-                />
-              </div>
-            </div>
-          </div>
-          <div>
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="bg-green-500 text-white px-4 py-2 rounded-md mt-4"
-            >
-              Criar Nova Receita
-            </button>
-          </div>
-        </div>
-      </div>
+      <div className="mt-[100px]">
+        <div className="-mx-3 flex flex-wrap gap-y-6 justify-center mb-12">
+          {nfts && nfts.length ? (
+            nfts.map((nft) => (
+              <div className="px-3 w-[250px] h-[150px] mt-5 ">
+                <div className="bg-white overflow-hidden rounded-xl text-gray-500 shadow-2xl">
+                  <Link
+                    href={`/details/${nft.itemId}`}
+                    className=""
+                  >
+                    <Image
+                      src={nft.image}
+                      className="w-full"
+                      alt="..."
+                      width="600"
+                      height="600"
+                    />
+                  </Link>
+                  <div className="px-4 py-6 sm:px-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-xl">
+                        <Link
+                          href={`/details/${nft.itemId}`}
+                          className="hover:text-primary-500 text-gray-900"
+                        >
+                          {nft.name}
+                        </Link>
+                      </h3>
+                    </div>
 
-      <div>
-        {/* <div className="flex flex-col w-full max-w-[700px] justify-between mb-6">
-          <div className="bg-orange-600 w-full max-w-5xl items-center justify-between font-mono text-sm flex flex-row p-5  rounded-md text-white">
-            <p className="text-white">Melhores Cervejas</p>
-          </div>
-          <div className="flex flex-wrap justify-between px-3">
-            {beers.map((beer, index) => (
-              <div
-                className="w-[200px] h-[250px] flex flex-col justify-between items-center rounded-lg bg-orange-600 text-white m-3  p-2"
-                key={index}
-                onClick={() => handleItemClick(beer)}
-              >
-                <div className="w-full h-1/2 bg-red-500" />
-                <div className="w-full h-1/2  mt-2 flex flex-col justify-between">
-                  <div>
-                    <p>{beer.name}</p>
-                    {beer.price && <p>{beer.price}</p>}
-                  </div>
-                  <div className="bg-orange-400 items-center justify-center flex rounded-md p-1">
-                    <p>Comprar</p>
+                    <div className="flex items-center justify-between flex-col">
+                      {/* <div>
+                        <Link
+                          href={`/details/${nft.itemId}`}
+                          className="hover:text-gray-400 inline-flex italic items-center space-x-2 text-sm"
+                        >
+                          <span>by {nft.description}</span>
+                        </Link>
+                      </div> */}
+
+                      {/* <div className="">
+                        <Link
+                          href={`/details/${nft.itemId}`}
+                          className="group text-secondary-500 flex flex-row justify-center items-center px-4 py-2 rounded-lg hover:bg-slate-200 bg-slate-300"
+                        >
+                          <p className="">Comprar</p>{" "}
+                        </Link>
+                      </div> */}
+                    </div>
                   </div>
                 </div>
               </div>
-            ))}
+            ))
+          ) : (
+            <>No NFTs found for this user.</>
+          )}
+        </div>
+        {/* <div className="mx-auto px-4 w-full lg:w-6/12">
+          <h1 className="font-bold leading-tight mb-2 text-4xl text-white md:leading-tight md:text-5xl lg:leading-tight lg:text-6xl 2xl:leading-tight 2xl:text-7xl">
+            {nft.name || "Loading..."}
+          </h1>
+          <p className="font-light mb-12 text-xl">
+            by {nft.description || "Loading..."}
+          </p>
+          <div className="flex flex-wrap gap-4 items-center">
+            <button
+              type="button"
+              onClick={btnBuyClick}
+              className="bg-gradient-to-t bg-primary-500 font-bold from-primary-500 hover:bg-primary-600 hover:from-primary-600 hover:to-primary-500 inline-block px-12 py-2 rounded text-white to-primary-400"
+            >
+              Buy
+            </button>
+            {message ? (
+              <p className="font-bold mt-5 text-white">{message}</p>
+            ) : (
+              <></>
+            )}
           </div>
         </div> */}
         {/* Melhores cervejas */}
 
         {/* Melhores receitas */}
         <div className="flex flex-col w-full max-w-[700px] justify-between mb-6">
-          <div className="flex flex-wrap justify-between px-3">
-            {recipes.map((recipe, index) => (
-              <div
-                className="w-[200px] h-[250px] flex flex-col justify-between items-center text-black m-3 rounded-lg p-2 bg-green-700 "
-                key={index}
-                onClick={() => handleItemClick(recipe)}
-              >
-                <img
-                  src={recipe.image} // Substitua pela URL da sua imagem
-                  alt="Descrição da imagem" // Adicione uma descrição adequada para acessibilidade
-                  className="w-full h-[50%] rounded-lg" // Ajuste o tamanho e a classe conforme necessário
-                />
-                <div className="w-full h-1/2 text-white mt-2 flex flex-col justify-between">
-                  <div>
-                    <p>{recipe.name}</p>
-                    <p>{recipe.price}</p>
-                  </div>
-
-                  <div className="bg-green-500 items-center justify-center flex rounded-md p-1">
-                    <p>Comprar</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <div className="flex flex-wrap justify-between px-3"></div>
         </div>
         {/* Melhores receitas */}
       </div>
